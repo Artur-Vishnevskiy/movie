@@ -22,7 +22,7 @@ interface MainProps {
 const Main: FC<MainProps> = ({ setFilm, films }) => (
   <>
     <div className={styles.mainUnit}>
-      <p className={styles.category}>Latest Releases</p>
+      <p className={styles.category}>Latest Release</p>
       <div className={styles.unitWithPosters}>
         {films.map((film: Film) => (
           <Poster 

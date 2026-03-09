@@ -109,7 +109,7 @@ const App: FC = () => {
   }, [arrayWithFavorite, filmInfo]);
 
   useEffect(() => {
-    fetch('https://api.themoviedb.org/3/movie/now_playing?api_key=b683c012a64a394b810a227a54f70c06') 
+    fetch('https://api.themoviedb.org/3/movie/upcoming?api_key=b683c012a64a394b810a227a54f70c06') 
       .then<ApiResponse>(res => {
         if (!res.ok) {
           throw new Error('Network response was not ok');
@@ -139,15 +139,15 @@ const App: FC = () => {
 
   return (
     <BrowserRouter>
-  <div className="app">
-    <Header/>
-    <Routes>
-      <Route path='/favorite' element={<FavoriteList deleteFavoriteFilm={deleteFromFavorite} arrayWithFavorite={arrayWithFavorite || []} />} />
-      <Route path='/film' element={<FilmInfo arrayWithFavorite={arrayWithFavorite || []} deleteFromFavorite={deleteFromFavorite} changeFilmToNext={changeFilmToNext} addToFavoriteFunction={addToFavorite} film={filmInfo} />} />
-      <Route path='/' element={<Main setFilm={setFilm} films={items} />} />
-    </Routes>
-  </div>
-</BrowserRouter>
+      <div className="app">
+        <Header/>
+        <Routes>
+          <Route path='/favorite' element={<FavoriteList deleteFavoriteFilm={deleteFromFavorite} arrayWithFavorite={arrayWithFavorite || []} />} />
+          <Route path='/film' element={<FilmInfo arrayWithFavorite={arrayWithFavorite || []} deleteFromFavorite={deleteFromFavorite} changeFilmToNext={changeFilmToNext} addToFavoriteFunction={addToFavorite} film={filmInfo} />} />
+          <Route path='/' element={<Main setFilm={setFilm} films={items} />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 };
 
