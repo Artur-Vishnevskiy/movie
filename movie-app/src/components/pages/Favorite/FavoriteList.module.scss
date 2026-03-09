@@ -1,0 +1,35 @@
+.message {
+  margin-top: 10%;
+  font-size: 50px;
+  text-align: center;
+}
+
+.favoriteList {
+  padding-top: 25px;
+  background-color: #f8f8f8;
+}
+
+.category {
+  margin: 0 0 25px 30px;
+}
+
+.background {
+  background-color: #f8f8f8;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+
+@media screen and (max-width: 768px) {
+  .favoriteList {
+    padding-top: 25px;
+    background-color: #f8f8f8;
+  }
+
+  .category {
+    margin: 0 0 25px 30px;
+  }
+}

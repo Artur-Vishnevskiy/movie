@@ -1,0 +1,20 @@
+.logo {
+  display: flex;
+  flex-direction: row;
+  width: 125px;
+  justify-content: space-between;
+  align-items: center;
+  text-decoration: none;
+}
+
+.art {
+  width: 50px;
+  height: 50px;
+  background-color: white;
+  border-radius: 50%;
+}
+
+.logoText {
+  color: white;
+  font-size: 20px;
+}

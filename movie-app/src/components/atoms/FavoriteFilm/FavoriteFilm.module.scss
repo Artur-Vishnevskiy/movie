@@ -1,0 +1,47 @@
+.descriptionOfFavoriteFilm {
+  width: 700px;
+  flex-wrap: wrap;
+  display: flex;
+  flex-direction: column;
+  color: #3b3b3b;
+  font-size: 20px;
+  padding: 10px;
+}
+
+.favoriteFilm {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  margin-left: 20px;
+}
+
+.unfavoriteButton {
+  border: 2px solid #2c2e34;
+  padding: 3px;
+  border-radius: 5px;
+  text-decoration: none;
+  color: #2c2e34;
+}
+
+.title {
+  font-size: 35px;
+}
+
+.blackLine {
+  border: 1px solid black;
+  margin: 25px;
+}
+
+.poster {
+  width: 342px;
+}
+
+@media screen and (max-width: 768px) {
+  .favoriteFilm {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    margin: 0 0 20px 0;
+    justify-content: center;
+  }
+}
