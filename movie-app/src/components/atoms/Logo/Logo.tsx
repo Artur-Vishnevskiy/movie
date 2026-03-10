@@ -23,7 +23,7 @@ const Logo: FC<LogoProps> = ({
     if (onClick) {
       onClick();
     } else {
-      navigate('/film');
+      navigate('/');
     }
   }, [history, onClick]);
 
