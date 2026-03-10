@@ -26,19 +26,22 @@ interface ApiResponse {
 }
 
 type ErrorState = string | null;
-
 type StoredFilm = Film | null;
-
 type FavoriteListType = Film[] | null;
 
 const App: FC = () => {
   const [error, setError] = useState<ErrorState>(null);
   const [items, setItems] = useState<Film[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [loadingMore, setLoadingMore] = useState<boolean>(false);
+
   const [filmInfo, setFilmInfo] = useState<StoredFilm>(() => {
     const stored = localStorage.getItem('film');
     return stored ? JSON.parse(stored) : null;
   });
-  
+
   const [arrayWithFavorite, setArrayWithFavorite] = useState<FavoriteListType>(() => {
     const stored = localStorage.getItem('favoriteList');
     return stored ? JSON.parse(stored) : null;
@@ -108,43 +111,100 @@ const App: FC = () => {
     setArrayWithFavorite(newFavoriteList);
   }, [arrayWithFavorite, filmInfo]);
 
-  useEffect(() => {
-    fetch('https://api.themoviedb.org/3/movie/upcoming?api_key=b683c012a64a394b810a227a54f70c06') 
-      .then<ApiResponse>(res => {
-        if (!res.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return res.json();
-      })
-      .then(
-        (result) => {
-          setItems(result.results);
-        },
-        (err: Error) => {
-          setError(err.message);
-        }
-      )
-      .catch((err: Error) => {
+  const fetchMovies = useCallback(async (page: number, append: boolean = false) => {
+    if (page === 1) {
+      setLoading(true);
+    } else {
+      setLoadingMore(true);
+    }
+
+    try {
+      const response = await fetch(
+        `https://api.themoviedb.org/3/movie/upcoming?api_key=b683c012a64a394b810a227a54f70c06&page=${page}`
+      );
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data: ApiResponse = await response.json();
+
+      if (append) {
+        setItems(prev => [...prev, ...data.results]);
+      } else {
+        setItems(data.results);
+      }
+      setTotalPages(data.total_pages);
+    } catch (err) {
+      if (err instanceof Error) {
         setError(err.message);
-      });
+      } else {
+        setError('Произошла неизвестная ошибка');
+      }
+    } finally {
+      setLoading(false);
+      setLoadingMore(false);
+    }
   }, []);
+
+  useEffect(() => {
+    setCurrentPage(1);
+    fetchMovies(1, false);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const loadMore = useCallback(() => {
+    if (currentPage < totalPages && !loadingMore) {
+      const nextPage = currentPage + 1;
+      setCurrentPage(nextPage);
+      fetchMovies(nextPage, true);
+    }
+  }, [currentPage, totalPages, loadingMore, fetchMovies]);
 
   if (error) {
     return <div className="app-error">Ошибка: {error}</div>;
   }
 
-  if (items.length === 0) {
+  if (loading && items.length === 0) {
     return <div className="app-loading">Загрузка...</div>;
   }
 
   return (
     <BrowserRouter>
       <div className="app">
-        <Header/>
+        <Header />
         <Routes>
-          <Route path='/favorite' element={<FavoriteList deleteFavoriteFilm={deleteFromFavorite} arrayWithFavorite={arrayWithFavorite || []} />} />
-          <Route path='/film' element={<FilmInfo arrayWithFavorite={arrayWithFavorite || []} deleteFromFavorite={deleteFromFavorite} changeFilmToNext={changeFilmToNext} addToFavoriteFunction={addToFavorite} film={filmInfo} />} />
-          <Route path='/' element={<Main setFilm={setFilm} films={items} />} />
+          <Route
+            path='/favorite'
+            element={
+              <FavoriteList
+                deleteFavoriteFilm={deleteFromFavorite}
+                arrayWithFavorite={arrayWithFavorite || []}
+              />
+            }
+          />
+          <Route
+            path='/film'
+            element={
+              <FilmInfo
+                arrayWithFavorite={arrayWithFavorite || []}
+                deleteFromFavorite={deleteFromFavorite}
+                changeFilmToNext={changeFilmToNext}
+                addToFavoriteFunction={addToFavorite}
+                film={filmInfo}
+              />
+            }
+          />
+          <Route
+            path='/'
+            element={
+              <Main
+                setFilm={setFilm}
+                films={items}
+                hasMore={currentPage < totalPages}
+                loadMore={loadMore}
+                loading={loading && items.length === 0}
+                loadingMore={loadingMore}
+              />
+            }
+          />
         </Routes>
       </div>
     </BrowserRouter>
