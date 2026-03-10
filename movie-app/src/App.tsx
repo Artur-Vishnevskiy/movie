@@ -148,7 +148,7 @@ const App: FC = () => {
   useEffect(() => {
     setCurrentPage(1);
     fetchMovies(1, false);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []); 
 
   const loadMore = useCallback(() => {
     if (currentPage < totalPages && !loadingMore) {
